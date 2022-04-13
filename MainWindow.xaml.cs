@@ -39,6 +39,7 @@ namespace DnsTest
                 {
                     Cachelist.Add(item);
                 }
+                Cachelist.CompleteAdding();
             }, TaskCreationOptions.LongRunning);
             addTask.Start();
 
@@ -47,7 +48,7 @@ namespace DnsTest
             Task.Run(async () =>
            {
                await Task.Delay(500);
-               while (Cachelist.Count > 0)
+               while (Cachelist.Count > 0|| Cachelist.IsAddingCompleted==false)
                {
                    var item = Cachelist.Take();
 
