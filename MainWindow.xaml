@@ -1,0 +1,53 @@
+﻿<Window x:Class="DnsTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DnsTest"
+        xmlns:rdzt="clr-namespace:RDZ.Tools;assembly=RDZ.Tools"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <FrameworkElement.Resources>
+        <rdzt:BoolVisualConverter FalseVisual="Visible" TrueVisual="Collapsed" x:Key="falseVisual"/>
+        <rdzt:BoolVisualConverter x:Key="trueVisual"/>
+        <DataTemplate DataType="{x:Type local:ItemVM}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Url}"  MinWidth="200"/>
+
+                    <TextBlock Text="IP:" Margin="20 0 0 0"/>
+                <TextBlock Text="{Binding IP}" MinWidth="150" Visibility="{Binding IsFailed,Converter={StaticResource falseVisual}}"/>
+                <TextBlock Text="失败" MinWidth="150" Visibility="{Binding IsFailed,Converter={StaticResource trueVisual}}"/>
+
+                    <TextBlock Text="Time:" Margin="20 0 0 0"/>
+                    <TextBlock Text="{Binding  Time}"/>
+              
+            </StackPanel>
+        </DataTemplate>
+    </FrameworkElement.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal" Margin="100 0 0 0">
+            <TextBlock  Text="dns服务器：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBox x:Name="dnsServerBox" Text="8.8.8.8" VerticalAlignment="Center" Width="150"/>
+            <Button Height="30" Width="100" Content="dns 测试" Click="Button_Click"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" VerticalAlignment="Center"  Orientation="Horizontal" Margin="100 0 0 0">
+            
+            <TextBlock  Text="进度：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBlock  Text="成功：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBlock  Text="失败：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBlock  Text="平均：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBlock  Text="最大：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+            <TextBlock  Text="最小：" VerticalAlignment="Center" Margin="10 0 0 0"/>
+        </StackPanel>
+        <TextBox Grid.Row="2" x:Name="urlBox" Text="baidu.com" Margin="2" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="Wrap">
+            
+        </TextBox>
+
+        <ListBox Grid.Row="2" x:Name="listBox" Visibility="Hidden"/>
+    </Grid>
+</Window>
