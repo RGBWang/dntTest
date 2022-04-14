@@ -36,7 +36,6 @@
             <Button Height="30" Width="100" Content="dns 测试" Click="Button_Click"/>
         </StackPanel>
         <StackPanel Grid.Row="1" VerticalAlignment="Center"  Orientation="Horizontal" Margin="100 0 0 0">
-            
             <TextBlock  Text="进度：" VerticalAlignment="Center" Margin="10 0 0 0"/>
             <TextBlock  Text="成功：" VerticalAlignment="Center" Margin="10 0 0 0"/>
             <TextBlock  Text="失败：" VerticalAlignment="Center" Margin="10 0 0 0"/>

@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -20,7 +21,9 @@ namespace DnsTest
         }
 
 
-       
+
+        static int GlobalControl = 0;
+
         private  void Button_Click(object sender, RoutedEventArgs e)
         {
             var list = urlBox.Text.Split(new char[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries)
@@ -32,37 +35,37 @@ namespace DnsTest
             string dnsServer = dnsServerBox.Text;
             listBox.ItemsSource = list;
             listBox.Visibility = Visibility.Visible;
-            BlockingCollection<ItemVM> Cachelist = new BlockingCollection<ItemVM>(10);
+
+            GlobalControl++;
+
+
+
+            int localControl = GlobalControl;
+            BlockingCollection<ItemVM> Cachelist = new BlockingCollection<ItemVM>(16);
 
             var addTask = new Task(() =>
             {
                 foreach (var item in list)
                 {
+                    if(localControl!= GlobalControl)
+                    {
+                        break;
+                    }
                     Cachelist.Add(item);
+
+                    Task.Run(() =>
+                    {
+                        var res = DnsTask.DoDnsTask(dnsServer, item.Url).Result;
+                        Cachelist.Take();
+                        item.IP = res.IP;
+                        item.Time = res.MiliSecondTime;
+                        item.IsFailed = res.IsFailed;
+                    });
                 }
+         
                 Cachelist.CompleteAdding();
             }, TaskCreationOptions.LongRunning);
             addTask.Start();
-
-          
-
-            Task.Run(async () =>
-           {
-               await Task.Delay(500);
-               while (Cachelist.Count > 0|| Cachelist.IsAddingCompleted==false)
-               {
-                   var item = Cachelist.Take();
-
-                   var eq = item == list[0];
-                   Task.Run(() =>
-                   {
-                       var res = DnsTask.DoDnsTask(dnsServer, item.Url).Result;
-                       item.IP = res.IP;
-                       item.Time = res.MiliSecondTime;
-                       item.IsFailed = res.IsFailed;
-                   });
-               }
-           });
 
         }
     }

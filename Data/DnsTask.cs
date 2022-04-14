@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DnsTest.Data
@@ -18,10 +19,12 @@ namespace DnsTest.Data
     }
     public static class DnsTask
     {
+        static object getPortLock=new object();
   
 
         public static async  Task<DnsResult> DoDnsTask(string dnsServer,string url)
         {
+            Monitor.Enter(getPortLock);
             var port = RDZ.Tools.Tool.GetFreeUdpPort();
             var localIP=RDZ.Tools.Tool.GetLocalIP();
 
@@ -29,7 +32,7 @@ namespace DnsTest.Data
             var sender = new UdpClient(new IPEndPoint(IPAddress.Parse(localIP),port));
             sender.Client.ReceiveTimeout = 5000;
             var data = UdpBinary.toDnsData(url);
-
+            Monitor.Exit(getPortLock);
             var time = DateTime.Now;
             try
             {
