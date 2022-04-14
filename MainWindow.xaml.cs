@@ -14,6 +14,7 @@ namespace DnsTest
     {
         public MainWindow()
         {
+            System.Net.ServicePointManager.DefaultConnectionLimit = 100;
             InitializeComponent();
             urlBox.Text = RDZ.Tools.FileHelper.LoadStringFromFile("urlList.txt");
         }
@@ -31,7 +32,7 @@ namespace DnsTest
             string dnsServer = dnsServerBox.Text;
             listBox.ItemsSource = list;
             listBox.Visibility = Visibility.Visible;
-            BlockingCollection<ItemVM> Cachelist = new BlockingCollection<ItemVM>(4);
+            BlockingCollection<ItemVM> Cachelist = new BlockingCollection<ItemVM>(10);
 
             var addTask = new Task(() =>
             {
@@ -104,7 +105,7 @@ namespace DnsTest
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChanged(string name)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            Application.Current?.Dispatcher?.Invoke(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
             });

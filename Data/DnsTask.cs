@@ -27,13 +27,15 @@ namespace DnsTest.Data
 
             var ie = new IPEndPoint(IPAddress.Parse(dnsServer), 53);
             var sender = new UdpClient(new IPEndPoint(IPAddress.Parse(localIP),port));
+            sender.Client.ReceiveTimeout = 5000;
             var data = UdpBinary.toDnsData(url);
 
-
+            var time = DateTime.Now;
             try
             {
-                var time=DateTime.Now;
+             
                 sender.Send(data, data.Length, ie);
+
                 byte[] recieData=   sender.Receive(ref ie);
                 var time2=DateTime.Now;
                 var result = new DnsResult() {
@@ -60,7 +62,9 @@ namespace DnsTest.Data
             }
             catch (Exception ex)
             {
-                return new DnsResult() { IsFailed=true};
+                var time2 = DateTime.Now;
+
+                return new DnsResult() { IsFailed= true, MiliSecondTime = Math.Round((time2 - time).TotalMilliseconds) };
             }
        
             

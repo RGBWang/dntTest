@@ -32,7 +32,7 @@
         </Grid.RowDefinitions>
         <StackPanel  VerticalAlignment="Center"  Orientation="Horizontal" Margin="100 0 0 0">
             <TextBlock  Text="dns服务器：" VerticalAlignment="Center" Margin="10 0 0 0"/>
-            <TextBox x:Name="dnsServerBox" Text="8.8.8.8" VerticalAlignment="Center" Width="150"/>
+            <TextBox x:Name="dnsServerBox" Text="192.168.1.1" VerticalAlignment="Center" Width="150"/>
             <Button Height="30" Width="100" Content="dns 测试" Click="Button_Click"/>
         </StackPanel>
         <StackPanel Grid.Row="1" VerticalAlignment="Center"  Orientation="Horizontal" Margin="100 0 0 0">
